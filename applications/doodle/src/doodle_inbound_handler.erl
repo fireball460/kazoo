@@ -187,7 +187,7 @@ delete_headers(#{request := JObj} = Map) ->
     Map#{request => kz_api:remove_defaults(JObj)}.
 
 -spec set_realm(map()) -> map().
-set_realm(#{request:= JObj} = Map) ->
+set_realm(#{request:= JObj, account_id := _AccountId} = Map) ->
     Realm = kz_json:get_value(?CCV(<<"Account-Realm">>), JObj),
     Keys = [<<"To">>, <<"From">>, {<<"To">>, <<"Request">>}],
     KVs = lists:foldl(fun({K1, K2}, Acc) ->
@@ -197,7 +197,8 @@ set_realm(#{request:= JObj} = Map) ->
                               V = kz_json:get_value(K, JObj),
                               [ set_realm_value(K, V, Realm) | Acc]
                       end, [], Keys),
-    Map#{request => kz_json:set_values(KVs, JObj)}.
+    Map#{request => kz_json:set_values(KVs, JObj)};
+set_realm(Map) -> Map.
 
 -spec set_realm_value(K, kz_term:ne_binary(), kz_term:ne_binary()) -> {K, kz_term:ne_binary()}.
 set_realm_value(K, Value, Realm) ->
