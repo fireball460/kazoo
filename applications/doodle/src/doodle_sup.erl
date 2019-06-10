@@ -11,7 +11,6 @@
 -export([init/1]).
 
 -include("doodle.hrl").
--include_lib("kazoo_amqp/include/kazoo_amqp_pool.hrl").
 
 -define(SERVER, ?MODULE).
 
