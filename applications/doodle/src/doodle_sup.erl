@@ -29,7 +29,7 @@
                   ,?SUPER('doodle_event_handler_sup')
                   ,?SUPER('doodle_exe_sup')
                   ,?SUPER('doodle_inbound_listener_sup')
-                  ,?POOL_NAME_ARGS(?OUTBOUND_POOL, [outbound_pool_args()])
+                  ,?DOODLE_POOL_NAME_ARGS(?OUTBOUND_POOL, [outbound_pool_args()])
                   ]).
 
 %%==============================================================================

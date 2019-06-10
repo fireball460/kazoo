@@ -31,6 +31,7 @@
 -define(RESOURCE_TYPES_HANDLED,[<<"sms">>]).
 
 -define(OUTBOUND_POOL, 'doodle_outbound_amqp_pool').
+-define(DOODLE_POOL_NAME_ARGS(Name, Args), ?WORKER_NAME_ARGS('poolboy', Name, Args)).
 
 -define(MSG_LIST_BY_NUMBER, <<"message/listing_by_number">>).
 -define(MSG_LIST_BY_PATTERN, <<"message/listing_by_pattern">>).
