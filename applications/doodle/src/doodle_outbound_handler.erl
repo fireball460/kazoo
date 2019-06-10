@@ -22,21 +22,18 @@ maybe_route(JObj) ->
            ,fun trusted_application/1
            ,fun number/1
            ,fun exchange/1
-%%            ,fun pool/1
            ],
-    Route = kzd_sms:route_id(JObj, <<"default">>),    
+    Route = kzd_sms:route_id(JObj, <<"default">>),
     route(kz_maps:exec(Funs, #{payload => JObj, route => Route})).
 
 -spec route(map()) -> any().
 route(#{payload := Payload}) ->
-    lager:debug_unsafe("RECHECK => ~s", [kz_json:encode(Payload, [pretty])]),
     kapps_sms_command:send_amqp_sms(Payload, ?OUTBOUND_POOL);
 route(_Map) ->
     lager:debug_unsafe("not routing sms ~p", [_Map]).
 
 account_has_sms(#{payload := JObj} = Map) ->
     %% TODO should this verify services ?
-    %%      trusted application
     AccountId = kzd_sms:account_id(JObj),
     case kzd_accounts:fetch(AccountId, 'accounts') of
         {'ok', Account} ->
@@ -57,7 +54,6 @@ exchange(#{payload := JObj} = Map) ->
 
 number(#{enabled := 'false'} = Map) -> Map;
 number(#{payload := JObj} = Map) ->
-    lager:debug_unsafe("CHECK => ~s", [kz_json:encode(JObj, [pretty])]),
     case knm_phone_number:fetch(kzd_sms:caller_id_number(JObj)) of
         {'ok', Num} ->
             case route_from_number(Num) of
@@ -66,14 +62,6 @@ number(#{payload := JObj} = Map) ->
             end;
         _ -> Map
     end.
-
-%% pool(#{enabled := 'false'} = Map) -> Map;
-%% pool(#{route := RouteId} = Map) ->
-%%     PoolName = kz_term:to_atom(<<"sms_outbound_", RouteId/binary>>, 'true'),
-%%     case erlang:whereis(PoolName) of
-%%         Pid when is_pid(Pid) -> Map#{pool => Pid, pool_name => PoolName};
-%%         _ -> Map#{pool_name => PoolName}
-%%     end.
 
 route_from_number(Num) ->
     Mod = knm_phone_number:module_name(Num),

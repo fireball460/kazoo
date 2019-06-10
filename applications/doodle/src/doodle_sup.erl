@@ -75,16 +75,16 @@ outbound_pool_args() ->
     ExchangeOptions = kz_json:get_json_value(?OUTBOUND_EXCHANGE_ARG(<<"options">>), config(), ?DEFAULT_EXCHANGE_OPTIONS_JOBJ),
     Exchanges = [{Exchange, ExchangeType, amqp_exchange_options(ExchangeOptions)}],
     [{'worker_module', 'kz_amqp_worker'}
-     ,{'name', {'local', ?OUTBOUND_POOL}}
-     ,{'size', PoolSize}
-     ,{'max_overflow', PoolOverflow}
-     ,{'strategy', 'fifo'}
-     ,{'neg_resp_threshold', PoolThreshold}
-     ,{'amqp_broker', Broker}
-     ,{'amqp_queuename_start', ?OUTBOUND_POOL}
-     ,{'amqp_bindings', []}
-     ,{'amqp_exchanges', Exchanges}
-     ,{'amqp_server_confirms', PoolServerConfirms}
+    ,{'name', {'local', ?OUTBOUND_POOL}}
+    ,{'size', PoolSize}
+    ,{'max_overflow', PoolOverflow}
+    ,{'strategy', 'fifo'}
+    ,{'neg_resp_threshold', PoolThreshold}
+    ,{'amqp_broker', Broker}
+    ,{'amqp_queuename_start', ?OUTBOUND_POOL}
+    ,{'amqp_bindings', []}
+    ,{'amqp_exchanges', Exchanges}
+    ,{'amqp_server_confirms', PoolServerConfirms}
     ].
 
 config() ->
