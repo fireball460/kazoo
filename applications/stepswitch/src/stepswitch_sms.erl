@@ -231,7 +231,7 @@ send(<<"amqp">>, Endpoint, API) ->
     ExchangeOptions = amqp_exchange_options(kz_json:get_value([<<"Endpoint-Options">>, <<"Exchange-Options">>], Endpoint)),
     maybe_add_broker(Broker, Exchange, RouteId, ExchangeType, ExchangeOptions, BrokerName),
 
-    lager:debug("sending sms and not waiting for response ~s", [CallId]),
+    lager:debug("sending sms ~s/~s and not waiting for response ~s", [Exchange, RouteId, CallId]),
     case send_amqp_sms(Payload, ?SMS_POOL(Exchange, RouteId, BrokerName)) of
         'ok' ->
             send_success(API, CallId);
@@ -342,6 +342,7 @@ build_sms_base({CIDNum, CIDName}, OffnetReq, Q) ->
       ,{<<"Call-ID">>, kapi_offnet_resource:call_id(OffnetReq)}
       ,{<<"Outbound-Callee-ID-Number">>, kapi_offnet_resource:outbound_callee_id_number(OffnetReq)}
       ,{<<"Outbound-Callee-ID-Name">>, kapi_offnet_resource:outbound_callee_id_name(OffnetReq)}
+      ,{<<"Callee-ID-Number">>, kapi_offnet_resource:to_did(OffnetReq)}
       ,{<<"Message-ID">>, kapi_offnet_resource:message_id(OffnetReq)}
       ,{<<"Body">>, kapi_offnet_resource:body(OffnetReq)}
        | kz_api:default_headers(Q, ?APP_NAME, ?APP_VERSION)
